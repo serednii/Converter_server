@@ -1,8 +1,20 @@
 [
   {
-    "login": "mykola",
     "password": "$2b$10$MLG1iURyfEPNCbfZ6S/upOB94YyfONuXV0.PB2jP8Fvg15UZ3JKe2",
     "name": "terytertyeryt",
-    "email": "seredniimykola@gmail.com"
+    "email": "seredniimykola@gmail.com",
+    "role": "user"
+  },
+  {
+    "email": "serednii@gmail.com",
+    "password": "$2b$10$Jn4qyV0ODSqX6q.SU7hf9uyCmI5bNromKlNXdyNuGFStS700yUjj6",
+    "name": "Mykola",
+    "role": "admin"
+  },
+  {
+    "email": "serednii11@gmail.com",
+    "password": "$2b$10$S0RSh6ZqoU9FQW4hMZ305.N7558q0sMH06Czf8M7UmHph08B4K7lu",
+    "name": "mykola2",
+    "role": "user"
   }
 ]

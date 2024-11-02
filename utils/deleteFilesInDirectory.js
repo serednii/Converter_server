@@ -2,8 +2,6 @@ const fs = require('fs').promises;
 // const fs = require('fs');
 // const path = require('path');
 
-
-
 // const deleteFilesInDirectory = (directory) => {
 //     fs.readdir(directory, (err, files) => {
 //         if (err) {
@@ -23,7 +21,6 @@ const fs = require('fs').promises;
 //     });
 // };
 
-
 // const deleteFilesInDirectory = async (directory) => {
 //     try {
 //         const files = await fs.readdir(directory); // Чекаємо список файлів
@@ -36,7 +33,6 @@ const fs = require('fs').promises;
 //         console.error(`Помилка: ${err}`);
 //     }
 // };
-
 
 // const deleteArchive = async (filePath) => {
 //     console.log('filePath', filePath)
