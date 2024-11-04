@@ -12,12 +12,12 @@ const log = (...args) => {
     // Перевірка: якщо перший аргумент є строкою та співпадає з рівнем
     if (typeof args[0] === 'string' && levels[args[0]]) {
         level = args[0];
-        if (level === "info") {
-            return
-        }
         messageArgs = args.slice(1); // Решта аргументів — повідомлення
     }
 
+    if (level == 'info') {
+        return 0
+    }
     const timestamp = new Date().toISOString();
     const color = levels[level];
 
