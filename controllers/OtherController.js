@@ -1,5 +1,9 @@
 
+const path = require('path');
+const fs = require('fs');
 const { dataQuery } = require('../utils/QueryController')
+const { archiveDir } = require('../utils/store');
+const { deleteArchive } = require('../utils/deleteFilesInDirectory');
 
 const OtherController = {
     status: (req, res) => {
@@ -52,6 +56,7 @@ const OtherController = {
     // Маршрут для завантаження конкретного файлу
     archiveFile: (req, res) => {
         try {
+            console.log(req.params.file)
             const filePath = path.join(archiveDir, req.params.file);
             console.log('archive/:file', req.params.file)
             // Перевіряємо, чи існує файл

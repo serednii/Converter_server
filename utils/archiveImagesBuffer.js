@@ -1,6 +1,7 @@
 const archiver = require('archiver');
 const { PassThrough } = require('stream');
 const fs = require('fs');
+const { log } = require('../utils/log');
 
 // Функція для створення архіву з буфера
 
@@ -13,17 +14,17 @@ const archiveFromBuffers = async (buffers, archivePath) => {
 
         // Обробка помилок
         output.on('error', (err) => {
-            console.error('Помилка запису архіву:', err);
+            log("error", 'Помилка запису архіву:', err);
             reject(err);
         });
 
         output.on('close', () => {
-            console.log(`${archive.pointer()} байт записано до архіву`);
+            log(`${archive.pointer()} байт записано до архіву`);
             resolve(archivePath);
         });
 
         archive.on('error', (err) => {
-            console.error('Помилка архівації:', err);
+            log("error", 'Помилка архівації:', err);
             reject(err);
         });
 

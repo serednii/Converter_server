@@ -159,16 +159,19 @@ class LoadBalancer {
                 }
 
                 const id = this.idQuery.toString();
-
                 const newArchivePath = path.join(archiveDir, `${id}_images_archive.zip`);//Папка для архіва з фото
-                const downloadLink = `${dataStore.urlWorkServer}/archive/${id}_images_archive.zip`//Імя архів з фотографіями
+                const downloadLink = `${dataStore.urlWorkServer}/other/archive/${id}_images_archive.zip`//Імя архів з фотографіями
                 this.dataQueryId.processingStatus = 'archive images';
 
                 await archiveFromBuffers(this.dataQueryId?.processedImages, newArchivePath);
 
-                setTimeout(() => { deleteArchive(newArchivePath) }, 60000);
+                setTimeout(() => {
+                    console.log('DeleteArchive file in load Balancer');
+                    deleteArchive(newArchivePath);
+                }, 60000 * 60);
+
                 this.dataQueryId.processingStatus = "downloading";
-                QueryController.deleteId(this.idQuery)
+                QueryController.deleteId(this.idQuery);
                 this.res.json({ processedImages: this.dataQueryId?.processedImages, downloadLink });
             }
         } catch (error) {

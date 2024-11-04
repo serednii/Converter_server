@@ -1,4 +1,6 @@
 const fs = require('fs').promises;
+const { log } = require('../utils/log');
+
 // const fs = require('fs');
 // const path = require('path');
 
@@ -47,16 +49,16 @@ const fs = require('fs').promises;
 
 const deleteArchive = async (filePath) => {
     try {
-        console.log('Attempting to delete file:', filePath);
+        log('Attempting to delete file:', filePath);
         await fs.unlink(filePath);
-        console.log(`Файл успішно видалено: ${filePath}`);
+        log(`Файл успішно видалено: ${filePath}`);
         return true;
     } catch (error) {
         if (error.code === 'ENOENT') {
-            console.log(`Файл не існує: ${filePath}`);
+            log('error', `Файл не існує: ${filePath}`);
             return false;
         } else {
-            console.error(`Помилка при видаленні файлу ${filePath}: ${error.message}`);
+            log('error', `Помилка при видаленні файлу ${filePath}: ${error.message}`);
             throw error; // Прокидуємо помилку далі, якщо це не відсутність файлу
         }
     }
@@ -65,9 +67,9 @@ const deleteArchive = async (filePath) => {
 const deleteDirectory = async (directory) => {
     try {
         await fs.rm(directory, { recursive: true, force: true }); // Видаляємо папку рекурсивно
-        console.log(`Директорія та її вміст видалені: ${directory}`);
+        log(`Директорія та її вміст видалені: ${directory}`);
     } catch (err) {
-        console.error(`Помилка при видаленні директорії: ${err}`);
+        log('error', `Помилка при видаленні директорії: ${err}`);
     }
 };
 
@@ -76,9 +78,9 @@ const deleteFileAfterTimeout = (filePath, timeout = 60000) => { // 60000 мс = 
     setTimeout(() => {
         fs.unlink(filePath, (err) => {
             if (err) {
-                console.error(`Помилка при видаленні файлу ${filePath}: ${err}`);
+                log('error', `Помилка при видаленні файлу ${filePath}: ${err}`);
             } else {
-                console.log(`Файл успішно видалено: ${filePath}`);
+                log(`Файл успішно видалено: ${filePath}`);
             }
         });
     }, timeout);

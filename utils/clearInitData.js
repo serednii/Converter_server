@@ -1,3 +1,6 @@
+
+const { log } = require('../utils/log');
+
 function clearInitData(idQuery) {
     try {
         if (dataQuery[idQuery]) {
@@ -9,7 +12,7 @@ function clearInitData(idQuery) {
             QueryController.deleteId(idQuery)
         }
     } catch (error) {
-        console.log('clear data error in init edpoint ', error)
+        log('error', 'clear data error in init edpoint ', error)
     }
 }
 
