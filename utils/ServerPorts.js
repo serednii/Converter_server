@@ -30,18 +30,32 @@ class ServerPorts {
 
     returnPorts() {
         try {
-            ServerPorts.freePorts.push(...this.ports)
+            // ServerPorts.freePorts.push(...this.ports)
+            //Якщо порта немає то ми недобавляємо
+            console.log("returnPorts Before", ServerPorts.freePorts)
+            const startPort = dataStore.startPorts
+            const endPort = dataStore.numberFreePorts + dataStore.startPorts
+            console.log(startPort)
+            console.log(endPort)
+
+            this.ports.forEach(port => {
+                if (!ServerPorts.freePorts.includes(port) &&
+                    port >= startPort && port <= endPort) {
+                    ServerPorts.freePorts.push(port)
+                }
+            })
+
             this.ports.length = 0;
-            console.log("returnPorts", ServerPorts.freePorts)
+            console.log("returnPorts After", ServerPorts.freePorts)
         } catch (error) {
             console.log('returnPorts', error)
         }
     }
 
     static generateFreePorts() {
-        ServerPorts.freePorts = Array.from({ length: dataStore.numberFriPorts }).map((_, i) => (dataStore.startPorts + i))
+        ServerPorts.freePorts = Array.from({ length: dataStore.numberFreePorts }).map((_, i) => (dataStore.startPorts + i))
     }
 
 }
 
-module.exports = { ServerPorts };
+module.exports = ServerPorts;

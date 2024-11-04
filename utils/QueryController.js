@@ -1,3 +1,6 @@
+const { dataQuery } = require('./store')
+
+
 class QueryController {
     static dataQuery = {}
     constructor({ controller, id, progress, total, processingStatus, processedImages, serverPorts, linkWorkServers, isServersTrue }) {
@@ -10,7 +13,6 @@ class QueryController {
         this.serverPorts = serverPorts;
         this.linkWorkServers = linkWorkServers;
         this.isServersTrue = isServersTrue;
-
     }
 
     static checkIsId(newId) {

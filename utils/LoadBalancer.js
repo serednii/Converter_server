@@ -4,7 +4,7 @@ const fs = require('fs');
 const { deleteArchive } = require('./deleteFilesInDirectory');
 const { archivePath, archiveDir } = require('./store');
 const { dataStore, pauseSend } = require('./store');
-const { ServerPorts } = require('./ServerPorts');
+const ServerPorts = require('./ServerPorts');
 const { QueryController } = require('./QueryController')
 const { archiveFromBuffers } = require('./archiveImagesBuffer');
 
@@ -21,7 +21,7 @@ class LoadBalancer {
         this.idQuery = dataQueryId.id;
         this.indexProcess = indexProcess;
         this.workServer = workServer;
-        this.dataQueryId.isServersTrue.push(1)
+        this.dataQueryId?.isServersTrue.push(1)
         this.#callNewServer();
     }
 
@@ -47,7 +47,7 @@ class LoadBalancer {
                     await new Promise(resolve => setTimeout(resolve, pauseSend.pause));
                 }
 
-                if (this.dataQueryId.controller.signal.aborted) {
+                if (this.dataQueryId?.controller.signal.aborted) {
                     this.dataQueryId.download = 'cancelled';
                     break;
                 }
@@ -77,7 +77,7 @@ class LoadBalancer {
                 //         console.log(this.dataQueryId.controller.signal.aborted)
                 //         console.log('********************************************************')
                 //     }
-                res = await sendData(this.workServer, formData, this.dataQueryId.controller, this.indexProcess)
+                res = await sendData(this.workServer, formData, this.dataQueryId?.controller, this.indexProcess)
                 // }
                 // flag++
                 // console.log('222222222222222222222222222222222222222222222222222222 ' + this.indexProcess)
@@ -86,7 +86,7 @@ class LoadBalancer {
                     // console.log('33333333333333333333333333333333333333333333333333 ' + this.indexProcess)
 
                     // LoadBalancer.process[this.indexProcess]++;
-                    this.dataQueryId.processedImages.push({ res, name: res[0].fileName })
+                    this.dataQueryId?.processedImages.push({ res, name: res[0].fileName })
 
                     this.dataQueryId.progress += 1;
                     ({ formData, index, finish } = this.generatorData.nextFormData());
@@ -147,7 +147,6 @@ class LoadBalancer {
                     this.res.status(500).send('Помилка сервера не всі файли опрацьовано');
                 }
 
-                console.log('ServerPorts.ports', ServerPorts.freePorts)
                 // Перевіряємо існування вихідної директорії
 
                 if (!fs.existsSync(archiveDir)) {
@@ -165,12 +164,12 @@ class LoadBalancer {
                 const downloadLink = `${dataStore.urlWorkServer}/archive/${id}_images_archive.zip`//Імя архів з фотографіями
                 this.dataQueryId.processingStatus = 'archive images';
 
-                await archiveFromBuffers(this.dataQueryId.processedImages, newArchivePath);
+                await archiveFromBuffers(this.dataQueryId?.processedImages, newArchivePath);
 
                 setTimeout(() => { deleteArchive(newArchivePath) }, 60000);
                 this.dataQueryId.processingStatus = "downloading";
                 QueryController.deleteId(this.idQuery)
-                this.res.json({ processedImages: this.dataQueryId.processedImages, downloadLink });
+                this.res.json({ processedImages: this.dataQueryId?.processedImages, downloadLink });
             }
         } catch (error) {
             console.log(error)

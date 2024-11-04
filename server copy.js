@@ -16,7 +16,6 @@ const { archiveDir, pauseSend, dataStore } = require('./utils/store');
 const { deleteArchive } = require('./utils/deleteFilesInDirectory');
 const { ServerPorts } = require('./utils/ServerPorts');
 const { QueryController, dataQuery } = require('./utils/QueryController')
-
 const USERS_FILE = path.join(__dirname, 'users.json');
 
 //генеруємо список вільниз портів
@@ -36,12 +35,10 @@ myEmitter.setMaxListeners(200); // Збільшуємо ліміт до 20
 const app = express();
 const port = 8000;
 
-
 // Створимо директорію для збереження зображень, якщо вона не існує
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-
 
 app.use(express.json());
 app.use(cors());
@@ -58,13 +55,16 @@ app.post('/upload-multiple', upload.array('images', 300), async (req, res) => {
             fs.mkdirSync(archiveDir);
         }
 
-        const { idQuery } = req.body;
+        const { idQuery, userEmail } = req.body;
+
+
+        // console.log('HHHHHHHHHHHHHHHHHHHHHHHH', dataQuery)
+        // console.log('HHHHHHHHHHHHHHHHHHHHHHHH', idQuery)
         dataQuery[idQuery].processingStatus = 'processing images';
         dataQuery[idQuery].total = req.files.length;
 
         //буде видавати почерзі файли поки незакінчаться 
         const generatorData = generatorFormData(req)
-
 
         const dataForLoadBalancer = {
             generatorData,
@@ -77,6 +77,30 @@ app.post('/upload-multiple', upload.array('images', 300), async (req, res) => {
             new LoadBalancer(dataForLoadBalancer, workServer, i);
         }
 
+
+        // if (userEmail) {
+        //     const users = readUsers();
+        //     // console.log('************** ********** ********* ', users)
+        //     // Знаходимо користувача за логіном
+        //     const indexUser = users.findIndex(user => user.email === userEmail);
+
+        //     // if (!user) {
+        //     //     return res.status(400).json({ message: 'Невірний логін або пароль' });
+        //     // }
+        //     // Додаємо нову історію
+
+        //     const dataHistory = {
+        //         date: new Date(),
+        //         numberImage: 14,
+        //         sizeFiles: 54846
+        //     }
+        //     users[indexUser].history.push(dataHistory)
+        //     const usersCopy = JSON.parse(JSON.stringify(users));
+        //     // setInterval(() => {
+        //     writeUsersAsync(usersCopy);
+        //     // }, 50_000)
+        // }
+
     } catch (error) {
         console.log('upload-multiple ', error)
     }
@@ -84,11 +108,9 @@ app.post('/upload-multiple', upload.array('images', 300), async (req, res) => {
 });
 
 
-
 app.post('/init', (req, res) => {
     try {
-
-        const { idQuery, urlMainServer, numberImage, } = req.body;
+        const { idQuery, urlMainServer, numberImage, sizeFiles, userEmail } = req.body;
         //Перевірка на правильність даних
         if (!numberImage || !idQuery || !urlMainServer) {
             res.status(400).send('неправильный, некорректный запрос.');
@@ -106,6 +128,30 @@ app.post('/init', (req, res) => {
 
         if (ServerPorts.freePorts.length <= 0) {
             res.status(503).json({ ports: 0, messag: 'Немає вільних серверів для обробки запиту. Будь ласка, спробуйте пізніше.' });
+        }
+        // console.log('user', userEmail, idQuery)
+
+        if (userEmail) {
+            const users = readUsers();
+            // console.log('************** ********** ********* ', users)
+            // Знаходимо користувача за логіном
+            const indexUser = users.findIndex(user => user.email === userEmail);
+
+            // if (!user) {
+            //     return res.status(400).json({ message: 'Невірний логін або пароль' });
+            // }
+            // Додаємо нову історію
+
+            const dataHistory = {
+                date: new Date(),
+                numberImage,
+                sizeFiles
+            }
+            users[indexUser].history.push(dataHistory)
+            const usersCopy = JSON.parse(JSON.stringify(users));
+            setInterval(() => {
+                writeUsersAsync(usersCopy);
+            }, 50_000)
         }
 
         //Записуєму свій зовнішній  адрес сервера на який прийшов визов
@@ -130,15 +176,13 @@ app.post('/init', (req, res) => {
             linkWorkServers: [],//Обєкти запущених серверів пізніше будемо їх закривати
             isServersTrue: [],//флаги для позначення закритих серверів (горшки з каміннями)
         }
-
         dataQuery[idQuery] = new QueryController(newQuery)
-
         //створюємо сервери
         createServers(serverPorts.ports, idQuery);
 
         setTimeout(() => {
             clearInitData(idQuery)
-        }, (30 * 1000));
+        }, (5 * 60 * 1000));
 
         res.json(dataSend);
     } catch (error) {
@@ -156,7 +200,6 @@ app.post('/status', (req, res) => {
         // console.log(dataQuery)
         res.json({
             progress: dataQuery[idQuery]?.progress,
-            download: dataQuery[idQuery]?.download,
             total: dataQuery[idQuery]?.total,
             processingStatus: dataQuery[idQuery]?.processingStatus,
         });
@@ -173,7 +216,7 @@ app.post('/killer', (req, res) => {
     pauseSend.pause = parseInt(pause);
     console.log(pauseSend)
     // console.log('serverStopped')
-    dataQuery[idQuery].linkWorkServers[0].close(() => {
+    dataQuery[idQuery]?.linkWorkServers[0].close(() => {
         console.log(`Сервер  зупинено`);
     })
     // linkWorkServers[1].close(() => {
@@ -192,7 +235,7 @@ app.post('/abort', (req, res) => {
         const { idQuery } = req.body;
         console.log('abort', idQuery)
 
-        dataQuery[idQuery].controller.abort(); // Скасовуємо всі запити
+        dataQuery[idQuery]?.controller.abort(); // Скасовуємо всі запити
 
         clearInitData(idQuery)
 
@@ -240,15 +283,67 @@ app.listen(port, () => {
 // Додайте новий ендпоінт для отримання статусу
 app.post('/getAdminData', (req, res) => {
     try {
+
         res.json({
-            friPorts: ServerPorts.freePorts,
+            freePorts: ServerPorts.freePorts,
             dataStore,
             workIdQuery: Object.keys(dataQuery).length,
+            users: readUsers()
         });
     } catch (error) {
         console.log('status ', error)
     }
 });
+
+app.post('/getUserData', (req, res) => {
+
+    try {
+        const { email } = req.body;
+        const users = readUsers()
+        const user = users.find(user => user.email === email);
+        res.json({
+            user,
+        });
+    } catch (error) {
+        console.log('status ', error)
+    }
+});
+
+// Додайте новий ендпоінт для отримання статусу
+app.post('/setAdminData', (req, res) => {
+    console.log(req.body)
+    const { key, value } = req.body;
+    dataStore[key] = parseInt(value)
+    switch (key) {
+        case "numberFreePorts":
+            ServerPorts.generateFreePorts();
+            console.log("returnPorts After", ServerPorts.freePorts)
+
+            break;
+        case "startPorts":
+            ServerPorts.generateFreePorts();
+            console.log("returnPorts After", ServerPorts.freePorts)
+            break;
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -263,14 +358,33 @@ if (!fs.existsSync(USERS_FILE)) {
 }
 
 // Функція для зчитування користувачів з файлу
-const readUsers = () => {
+function readUsers() {
     return JSON.parse(fs.readFileSync(USERS_FILE));
 };
 
 // Функція для запису користувачів у файл
-const writeUsers = (users) => {
+function writeUsers(users) {
     fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 };
+
+function writeUsersAsync(users) {
+    fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2), (err) => {
+        if (err) {
+            console.error('Помилка запису у файл:', err);
+        } else {
+            console.log('Дані успішно записані у файл');
+        }
+    });
+};
+// async function writeUsersAsync(users) {
+//     try {
+//         await fs.promises.writeFile(USERS_FILE, JSON.stringify(users, null, 2));
+//         console.log('Дані успішно записані у файл');
+//     } catch (error) {
+//         console.error('Помилка запису у файл:', error);
+//     }
+// }
+
 // Ендпоінт для реєстрації
 app.post('/register', async (req, res) => {
     try {
@@ -294,7 +408,7 @@ app.post('/register', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Додаємо нового користувача
-        const newUser = { email, password: hashedPassword, name, role: "user" };
+        const newUser = { email, password: hashedPassword, name, role: "user", history: [] };
         users.push(newUser);
         writeUsers(users);
 
@@ -336,6 +450,14 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ message: 'Помилка сервера' });
     }
 });
+
+
+
+
+
+
+
+
 
 
 
@@ -447,7 +569,7 @@ function createServer(port, idQuery) {
         console.log(`Оброблювальний сервер працює на http://localhost:${port}`);
     });
 
-    dataQuery[idQuery].linkWorkServers.push(linkServer)
+    dataQuery[idQuery]?.linkWorkServers.push(linkServer)
 
     app.get('/status', (req, res) => {
         console.log('get status port  ', port)
@@ -456,12 +578,6 @@ function createServer(port, idQuery) {
 };
 
 // Функція для створення кількох серверів
-// const createServers = (numServers, startPort) => {
-//     for (let i = 0; i < numServers; i++) {
-//         const port = startPort + i;
-//         createServer(port);
-//     }
-// };
 
 function createServers(ports, idQuery) {
     console.log('portsportsportsportsports', ports)
@@ -475,17 +591,19 @@ function createServers(ports, idQuery) {
 // Кількість серверів і стартовий порт
 const startPort = 8100; // Початковий порт
 
-// createServers(numberServers, startPort);
+
 
 
 function clearInitData(idQuery) {
     try {
-        dataQuery[idQuery].serverPorts.returnPorts();
-        dataQuery[idQuery].linkWorkServers.forEach(server => server.close(() => console.log(`Сервер  зупинено`)));
-        const id = idQuery.toString();
-        const newArchivePath = path.join(archiveDir, `${id}_images_archive.zip`);//Папка для архіва з фото
-        deleteArchive(newArchivePath);
-        QueryController.deleteId(idQuery)
+        if (dataQuery[idQuery]) {
+            dataQuery[idQuery]?.serverPorts.returnPorts();
+            dataQuery[idQuery]?.linkWorkServers.forEach(server => server.close(() => console.log(`Сервер  зупинено`)));
+            const id = idQuery.toString();
+            const newArchivePath = path.join(archiveDir, `${id}_images_archive.zip`);//Папка для архіва з фото
+            deleteArchive(newArchivePath);
+            QueryController.deleteId(idQuery)
+        }
     } catch (error) {
         console.log('clear data error in init edpoint ', error)
     }
