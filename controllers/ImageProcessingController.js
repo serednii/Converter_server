@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { archiveDir } = require('../utils/store');
+const { archiveDir } = require('../utils/config');
 const { dataQuery } = require('../utils/QueryController');
 const { LoadBalancer } = require("../utils/LoadBalancer");
 const { generatorFormData } = require("../utils/generatorFormData");
@@ -18,8 +18,6 @@ const ImageProcessingController = {
             }
 
             const { idQuery, userEmail } = req.body;
-            // console.log('HHHHHHHHHHHHHHHHHHHHHHHH', dataQuery)
-            // console.log('HHHHHHHHHHHHHHHHHHHHHHHH', idQuery)
             dataQuery[idQuery].processingStatus = 'processing images';
             dataQuery[idQuery].total = req.files.length;
 
@@ -37,32 +35,9 @@ const ImageProcessingController = {
                 new LoadBalancer(dataForLoadBalancer, workServer, i);
             }
 
-
-            // if (userEmail) {
-            //     const users = readUsers();
-            //     // console.log('************** ********** ********* ', users)
-            //     // Знаходимо користувача за логіном
-            //     const indexUser = users.findIndex(user => user.email === userEmail);
-
-            //     // if (!user) {
-            //     //     return res.status(400).json({ message: 'Невірний логін або пароль' });
-            //     // }
-            //     // Додаємо нову історію
-
-            //     const dataHistory = {
-            //         date: new Date(),
-            //         numberImage: 14,
-            //         sizeFiles: 54846
-            //     }
-            //     users[indexUser].history.push(dataHistory)
-            //     const usersCopy = JSON.parse(JSON.stringify(users));
-            //     // setInterval(() => {
-            //     writeUsersAsync(usersCopy);
-            //     // }, 50_000)
-            // }
-
         } catch (error) {
             console.log('upload-multiple ', error)
+            res.status(500).send('ImageProcessingController', error)
         }
 
     }

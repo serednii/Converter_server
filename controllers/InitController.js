@@ -1,5 +1,5 @@
 const { QueryController, dataQuery } = require('../utils/QueryController')
-const { dataStore } = require('../utils/store');
+const { dataStore } = require('../utils/config');
 const ServerPorts = require('../utils/ServerPorts');
 const { AbortController } = require('node-abort-controller');
 const clearInitData = require('../utils/clearInitData');
@@ -28,7 +28,6 @@ const InitController = {
             if (ServerPorts.freePorts.length <= 0) {
                 res.status(503).json({ ports: 0, messag: 'Немає вільних серверів для обробки запиту. Будь ласка, спробуйте пізніше.' });
             }
-            // console.log('user', userEmail, idQuery)
 
             if (userEmail) {
                 const users = FileService.readUsers();
@@ -36,9 +35,6 @@ const InitController = {
                 // Знаходимо користувача за логіном
                 const indexUser = users.findIndex(user => user.email === userEmail);
 
-                // if (!user) {
-                //     return res.status(400).json({ message: 'Невірний логін або пароль' });
-                // }
                 // Додаємо нову історію
 
                 const dataHistory = {
@@ -88,6 +84,7 @@ const InitController = {
             res.json(dataSend);
         } catch (error) {
             console.log('init ', error)
+            res.status(500).send('InitController', error)
         }
 
     }

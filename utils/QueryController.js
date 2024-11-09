@@ -1,4 +1,4 @@
-const { dataQuery } = require('./store')
+const { dataQuery } = require('./config')
 
 
 class QueryController {

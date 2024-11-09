@@ -1,5 +1,5 @@
 
-const { dataStore } = require('./store');
+const { dataStore } = require('./config');
 class ServerPorts {
     static freePorts = [];
     static errorPorts = [];

@@ -5,7 +5,7 @@ const projectRoot = path.resolve(__dirname, '..');
 const dataStore = {
     urlWorkServer: '',
     numberFreePorts: 20,
-    numberImageToServer: 2,
+    numberImageToServer: 10,
     startPorts: 8100
 }
 // dataQuery = {}

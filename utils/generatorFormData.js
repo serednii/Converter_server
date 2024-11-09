@@ -2,8 +2,10 @@
 const FormData = require('form-data');
 
 const generatorFormData = (req) => {
-    let index = 0
+    let index = 0;
     let newFormsData;
+    console.log('req.body', req.body)
+
     try {
         newFormsData = req?.files.map((file) => {
             const formData = new FormData();

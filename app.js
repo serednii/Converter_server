@@ -3,7 +3,7 @@ const cors = require('cors');
 const EventEmitter = require('events');
 const myEmitter = new EventEmitter();
 const ServerPorts = require('./utils/ServerPorts');
-const { log } = require('./utils/log');
+
 const app = express();
 const PORT = 8000;
 
@@ -31,5 +31,5 @@ app.use('/other', otherRoutes);
 
 // Запуск сервера
 app.listen(PORT, () => {
-    log(`Центральний сервер працює на http://localhost:${PORT}`);
+    console.log(`Центральний сервер працює на http://localhost:${PORT}`);
 });

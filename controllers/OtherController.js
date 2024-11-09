@@ -2,7 +2,7 @@
 const path = require('path');
 const fs = require('fs');
 const { dataQuery } = require('../utils/QueryController')
-const { archiveDir } = require('../utils/store');
+const { archiveDir } = require('../utils/config');
 const { deleteArchive } = require('../utils/deleteFilesInDirectory');
 
 const OtherController = {

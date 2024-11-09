@@ -1,6 +1,6 @@
 const FileService = require('../utils/FileService');
 const ServerPorts = require('../utils/ServerPorts');
-const { dataStore } = require('../utils/store');
+const { dataStore } = require('../utils/config');
 const { dataQuery } = require('../utils//QueryController');
 
 

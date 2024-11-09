@@ -1,7 +1,6 @@
 const archiver = require('archiver');
 const { PassThrough } = require('stream');
 const fs = require('fs');
-const { log } = require('../utils/log');
 
 // Функція для створення архіву з буфера
 
@@ -14,17 +13,17 @@ const archiveFromBuffers = async (buffers, archivePath) => {
 
         // Обробка помилок
         output.on('error', (err) => {
-            log("error", 'Помилка запису архіву:', err);
+            console.log("error", 'Помилка запису архіву:', err);
             reject(err);
         });
 
         output.on('close', () => {
-            log(`${archive.pointer()} байт записано до архіву`);
+            console.log(`${archive.pointer()} байт записано до архіву`);
             resolve(archivePath);
         });
 
         archive.on('error', (err) => {
-            log("error", 'Помилка архівації:', err);
+            console.log("error", 'Помилка архівації:', err);
             reject(err);
         });
 
@@ -33,7 +32,7 @@ const archiveFromBuffers = async (buffers, archivePath) => {
 
         // Додаємо кожен буфер з масиву до архіву з унікальним ім'ям
         buffers.forEach((buffer, index) => {
-            const base64Data = buffer.res[0].imageBase64.replace(/^data:image\/jpeg;base64,/, '');
+            const base64Data = buffer.response[0].imageBase64.replace(/^data:image\/jpeg;base64,/, '');
             const imageBuffer = Buffer.from(base64Data, 'base64');
             const passThrough = new PassThrough();
             passThrough.end(imageBuffer);

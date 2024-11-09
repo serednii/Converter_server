@@ -26,6 +26,7 @@ async function sendData(workerServer, formData, controller, idProcess) {
             console.warn('Запит було скасовано на робочому сервері');
         } else {
             console.error('Сталася помилка:', error.message);
+            throw new Error(`Сталася помилка:', ${error}`)
         }
     }
 }
