@@ -6,7 +6,6 @@ const { dataQuery } = require('../utils//QueryController');
 
 const AdminController = {
 
-    // Додайте новий ендпоінт для отримання статусу
     getAdminData: (req, res) => {
         try {
             res.json({
@@ -16,24 +15,31 @@ const AdminController = {
                 users: FileService.readUsers()
             });
         } catch (error) {
-            console.log('status ', error)
+            console.log('AdminController-getAdminData', error)
+            res.status(500).send(`AdminController-getAdminData ${error}`)
         }
     },
 
-    // Додайте новий ендпоінт для отримання статусу
+
     setAdminData: (req, res) => {
         console.log(req.body)
-        const { key, value } = req.body;
-        dataStore[key] = parseInt(value)
-        switch (key) {
-            case "numberFreePorts":
-                ServerPorts.generateFreePorts();
-                console.log("returnPorts After", ServerPorts.freePorts)
-                break;
-            case "startPorts":
-                ServerPorts.generateFreePorts();
-                console.log("returnPorts After", ServerPorts.freePorts)
-                break;
+        try {
+
+            const { key, value } = req.body;
+            dataStore[key] = parseInt(value)
+            switch (key) {
+                case "numberFreePorts":
+                    ServerPorts.generateFreePorts();
+                    console.log("returnPorts After", ServerPorts.freePorts)
+                    break;
+                case "startPorts":
+                    ServerPorts.generateFreePorts();
+                    console.log("returnPorts After", ServerPorts.freePorts)
+                    break;
+            }
+        } catch (error) {
+            console.log('AdminController-setAdminData ', error)
+            res.status(500).send(`AdminController-setAdminData ${error}`)
         }
     }
 }

@@ -1,5 +1,5 @@
 
-
+const { dataQuery } = require('../utils//QueryController');
 function clearInitData(idQuery) {
     try {
         if (dataQuery[idQuery]) {

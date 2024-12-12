@@ -1,5 +1,4 @@
 const fs = require('fs');
-const { archiveDir } = require('../utils/config');
 const { dataQuery } = require('../utils/QueryController');
 const { LoadBalancer } = require("../utils/LoadBalancer");
 const { generatorFormData } = require("../utils/generatorFormData");
@@ -13,11 +12,11 @@ const ImageProcessingController = {
                 return res.status(400).send('Будь ласка, завантажте зображення');
             }
 
-            if (!fs.existsSync(archiveDir)) {
-                fs.mkdirSync(archiveDir);
+            const { idQuery } = req.body;
+            if (!dataQuery[idQuery]) {
+                return res.status(400).send(`Такого обєкто з id ${idQuery} не має`);
             }
 
-            const { idQuery, userEmail } = req.body;
             dataQuery[idQuery].processingStatus = 'processing images';
             dataQuery[idQuery].total = req.files.length;
 

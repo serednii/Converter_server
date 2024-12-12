@@ -9,8 +9,6 @@ const OtherController = {
     status: (req, res) => {
         try {
             const { idQuery } = req.body;
-            // console.log('get status', idQuery)
-            // console.log(dataQuery)
             res.json({
                 progress: dataQuery[idQuery]?.progress,
                 total: dataQuery[idQuery]?.total,
@@ -18,23 +16,9 @@ const OtherController = {
             });
         } catch (error) {
             console.log('status ', error)
-        }
-    },
+            res.status(404).send(`OtherController status ${error}`);
 
-    killer: (req, res) => {
-        let { pause } = req.body;
-        if (pause > 3000) {
-            pause = 3000
         }
-        pauseSend.pause = parseInt(pause);
-        console.log(pauseSend)
-        // console.log('serverStopped')
-        dataQuery[idQuery]?.linkWorkServers[0].close(() => {
-            console.log(`Сервер  зупинено`);
-        })
-        res.json({
-            message: 'Server stopped',
-        });
     },
 
     abort: (req, res) => {
@@ -48,7 +32,8 @@ const OtherController = {
 
             res.send('Запит скасовано');
         } catch (error) {
-            console.log('abort ', error)
+            console.log('OtherController abort ', error)
+            res.status(404).send(`OtherController abort ${error}`);
         }
     },
 
@@ -77,7 +62,8 @@ const OtherController = {
                 res.status(404).send('Файл не знайдено.');
             }
         } catch (error) {
-            console.log('/archive/:file ', error)
+            console.log('OtherController archiveFile', error)
+            res.status(404).send(`OtherController archiveFile ${error}`);
         }
     }
 }

@@ -27,25 +27,19 @@ class LoadBalancer {
 
         while (!finish) {
             try {
-                if (dataStore.urlWorkServer !== "http://localhost:8000") {
-                    console.log('TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT')
-                    await new Promise(resolve => setTimeout(resolve, pauseSend.pause));
-                }
 
                 if (this.dataQueryId?.controller.signal.aborted) {
-                    this.dataQueryId.download = 'cancelled';
-                    break;
+                    this.#checkServersTrue()
                 }
 
                 // Якщо немає доступних серверів, припиняємо обробку
                 console.log('server', this.workServer + " " + this.indexProcess)
                 if (!this.workServer) {
-                    throw new Error('No available servers');
+                    this.dataQueryId.serverPorts.returnPorts();
+                    this.#checkServersTrue()
                 }
 
-                formData.append('idProcess', this.indexProcess);
-
-                const response = await sendData(this.workServer, formData, this.dataQueryId?.controller, this.indexProcess)
+                const response = await sendData(this.workServer, formData, this.dataQueryId?.controller)
 
                 if (response) {
                     this.dataQueryId?.processedImages.push({ response, name: response[0].fileName })
@@ -54,16 +48,10 @@ class LoadBalancer {
                 } else {
                     this.generatorData.returnFormData(formData);
                     this.#checkServersTrue();
-                    const errorText = await response.text();
-                    throw new Error(`Error callNewServer ${response.status}: ${errorText}`);
                 }
             } catch (error) {
-                console.log(error)
                 this.dataQueryId.serverPorts.returnPorts();
-                this.dataQueryId.linkWorkServers.forEach(server => server.close(() => console.log(`Сервер  зупинено`)));
-                QueryController.deleteId(this.idQuery)
-                this.res.status(500).send(`Error callNewServer, ${error}`);
-                return;
+                this.#checkServersTrue();
             }
 
         }
@@ -108,7 +96,7 @@ class LoadBalancer {
                 setTimeout(() => {
                     console.log('DeleteArchive file in load Balancer');
                     deleteArchive(newArchivePath);
-                }, 60000 * 60);
+                }, 2 * 60 * 1000);
                 this.dataQueryId.processingStatus = "downloading";
                 this.res.json({ processedImages: this.dataQueryId?.processedImages, downloadLink });
                 QueryController.deleteId(this.idQuery);

@@ -26,16 +26,10 @@ function createServer(port, idQuery) {
                 })
             );
 
-
             res.json(processedImages);
         } catch (error) {
-            // if (req.aborted) {
-            //     console.log('ERROR process-images', error)
-            //     res.status(499).send('Aborted by client************************');
-            // } else {
             console.log('ERROR process-images', error)
             res.status(500).send('Error processing images');
-            // }
         }
     });
 

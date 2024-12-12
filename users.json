@@ -92,6 +92,76 @@
         "date": "2024-11-08T22:32:46.397Z",
         "numberImage": 29,
         "sizeFiles": 135319758
+      },
+      {
+        "date": "2024-11-09T07:14:43.557Z",
+        "numberImage": 7,
+        "sizeFiles": 26501538
+      },
+      {
+        "date": "2024-11-09T07:19:17.855Z",
+        "numberImage": 7,
+        "sizeFiles": 26501538
+      },
+      {
+        "date": "2024-11-09T07:22:52.034Z",
+        "numberImage": 66,
+        "sizeFiles": 364963654
+      },
+      {
+        "date": "2024-11-09T07:29:30.874Z",
+        "numberImage": 66,
+        "sizeFiles": 364963654
+      },
+      {
+        "date": "2024-11-09T07:30:44.413Z",
+        "numberImage": 66,
+        "sizeFiles": 364963654
+      },
+      {
+        "date": "2024-11-09T11:14:41.871Z",
+        "numberImage": 11,
+        "sizeFiles": 46141858
+      },
+      {
+        "date": "2024-11-09T11:18:20.047Z",
+        "numberImage": 12,
+        "sizeFiles": 51349192
+      },
+      {
+        "date": "2024-11-09T11:19:25.408Z",
+        "numberImage": 12,
+        "sizeFiles": 51349192
+      },
+      {
+        "date": "2024-11-09T11:22:06.142Z",
+        "numberImage": 5,
+        "sizeFiles": 18284913
+      },
+      {
+        "date": "2024-11-09T11:23:24.515Z",
+        "numberImage": 12,
+        "sizeFiles": 46109641
+      },
+      {
+        "date": "2024-11-09T11:27:57.608Z",
+        "numberImage": 11,
+        "sizeFiles": 44498256
+      },
+      {
+        "date": "2024-11-09T15:19:10.176Z",
+        "numberImage": 5,
+        "sizeFiles": 17624999
+      },
+      {
+        "date": "2024-11-09T15:21:04.733Z",
+        "numberImage": 5,
+        "sizeFiles": 17624999
+      },
+      {
+        "date": "2024-12-12T21:16:19.534Z",
+        "numberImage": 5,
+        "sizeFiles": 16870554
       }
     ]
   },
@@ -117,5 +187,12 @@
         "sizeFiles": 28211544
       }
     ]
+  },
+  {
+    "email": "test@gmail.com",
+    "password": "$2b$10$lmHcsclODoeXmHuDwRPbxei0TR.oJz4UtU4Zu.Yb3F5BSJcunIizK",
+    "name": "test",
+    "role": "user",
+    "history": []
   }
 ]

@@ -1,15 +1,13 @@
-
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 
-async function sendData(workerServer, formData, controller, idProcess) {
+async function sendData(workerServer, formData, controller) {
     try {
-        // console.log(`sendData called for process ID: ${idProcess}`);
-        // console.log(`Worker Server: ${workerServer} for process ID: ${idProcess}`);
+        const headers = formData.getHeaders ? formData.getHeaders() : {};
 
         const response = await fetch(workerServer, {
             method: 'POST',
             body: formData,
-            headers: formData.getHeaders(),
+            headers,
             signal: controller.signal, // Передаємо сигнал скасування
         });
 
@@ -26,10 +24,9 @@ async function sendData(workerServer, formData, controller, idProcess) {
             console.warn('Запит було скасовано на робочому сервері');
         } else {
             console.error('Сталася помилка:', error.message);
-            throw new Error(`Сталася помилка:', ${error}`)
+            throw error; // Просто передаємо помилку далі без форматування
         }
     }
 }
-
 
 module.exports = { sendData };

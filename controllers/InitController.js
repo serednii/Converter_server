@@ -54,7 +54,7 @@ const InitController = {
 
             //якщо є вільні порти то створюємо нового клієнта
             const controller = new AbortController();
-            // console.log('ServerPorts.ports', ServerPorts.freePorts);
+            // 
             const serverPorts = new ServerPorts(numberServers);
             // console.log('ServerPorts.ports', ServerPorts.freePorts);
             dataSend.ports = serverPorts.length;
@@ -77,9 +77,7 @@ const InitController = {
             console.log('serverPorts*******************', serverPorts)
             createServers(serverPorts.ports, idQuery);
 
-            setTimeout(() => {
-                clearInitData(idQuery)
-            }, (5 * 60 * 1000));
+            setTimeout(() => clearInitData(idQuery), (5 * 60 * 1000));
 
             res.json(dataSend);
         } catch (error) {
