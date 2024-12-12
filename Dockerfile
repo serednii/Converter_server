@@ -20,4 +20,4 @@ RUN npm rebuild sharp
 EXPOSE $PORT
 
 # Запустіть додаток
-CMD ["node", "server.js"]
+CMD ["node", "app.js"]
